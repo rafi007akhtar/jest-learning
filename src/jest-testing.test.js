@@ -1,4 +1,6 @@
-import { sum, compileMotherBoxCode } from './jest-testing';
+import { sum, compileMotherBoxCode, fetchData, fetchDataAsPromise, fetchErrorAsPromise } from './jest-testing';
+require("babel-core/register");
+require("babel-polyfill");
 
 // Getting Started - begin
 test('adds 1 + 2 to equal 3', () => {
@@ -41,3 +43,58 @@ test('summon the Darkseid', () => {
     // so, use `toThrow` to test exceptions handling
 });
 // Using Matchers - end
+
+// Testing Asynchronous Code - begin
+// technique 1 - callbacks
+test('the data is peanut butter', (done) => {
+    function callback(data) {
+        try {
+            expect(data).toBe('peanut butter');
+            done();
+        } catch (error) {
+            done(error);
+        }
+    }
+
+    fetchData(callback);
+});
+
+// technique 2 - for promises
+test('the data from the promise is peanut butter', () => {
+    return fetchDataAsPromise().then(data => {
+        expect(data).toBe('peanut butter');
+    })
+});
+test('the fetch fails with an error', () => {
+    return fetchErrorAsPromise().catch(e => expect(e).toMatch('error'));
+});
+
+// technique 3 - syntactic sugar for promises
+test('short - the data from the promise is peanut butter', () => {
+    return expect(fetchDataAsPromise()).resolves.toBe('peanut butter');
+});
+test('short - the fetch fails with an error', () => {
+    return expect(fetchErrorAsPromise()).rejects.toMatch('error');
+})
+
+// technique 4 - using async / await
+// NOTE: unlike Angular, do NOT wrap the tests in an async zone here
+// instead, just use the `async` keyword to perform the testing
+test('the data from the promise is peanut butter (async/await)', async () => {
+    const data = await fetchDataAsPromise();
+    expect(data).toBe('peanut butter');
+});
+test('the fetch fails with an error (async/await)', async () => {
+    try {
+        await fetchErrorAsPromise()
+    } catch (error) {
+        expect(error).toMatch('error');
+    }
+});
+test('short - the data from the promise is peanut butter (async/await)', async () => {
+    await expect(fetchDataAsPromise()).resolves.toBe('peanut butter');
+});
+test('short - the fetch fails with an error (async/await)', async () => {
+    await expect(fetchErrorAsPromise()).rejects.toMatch('error');
+})
+// Testing Asynchronous Code - end
