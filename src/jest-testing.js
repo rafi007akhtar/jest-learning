@@ -2,4 +2,8 @@ function sum(a, b) {
     return a + b;
 }
 
-module.exports = sum;
+function compileMotherBoxCode() {
+    throw new Error('bruh this tech ain\'t Apocalyptic');
+}
+
+module.exports = { sum, compileMotherBoxCode };
