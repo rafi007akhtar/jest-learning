@@ -35,8 +35,22 @@ Assuming the repository has been cloned and the dependencies have been installed
 jest
 ```
 Or, if you want to see the code coverage as well, run:
-```
+```sh
 jest --coverage
+```
+
+### But what if ...
+the tests don't run?
+
+In that case, Jest might not be installed globally. To remedy that, enter the following in the CLI:
+```sh
+npm install jest --global
+```
+and the tests should work.
+
+Otherwise, if you don't want to install jest globally, enter the following alternative command.
+```sh
+npm run test  # equivalent for `jest`
 ```
 
 ## Troubleshooting
