@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+It contains code I wrote while trying to learn Jest [from the Docs](https://jestjs.io/docs/getting-started).
+
 ## Test Files
 The main test file is [jest-testing.test.js](src/jest-testing.test.js).
 
