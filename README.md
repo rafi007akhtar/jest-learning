@@ -29,7 +29,7 @@ npm install
 npm start
 ```
 
-## Running the test
+## Running the tests
 Assuming the repository has been cloned and the dependencies have been installed, enter the following command to run the tests.
 ```sh
 jest
@@ -48,9 +48,9 @@ npm install jest --global
 ```
 and the tests should work.
 
-Otherwise, if you don't want to install jest globally, enter the following alternative command.
+Otherwise, if you don't want to install Jest globally, enter the following alternative command.
 ```sh
-npm run test  # equivalent for `jest`
+npm run test  # equivalent to `jest`
 ```
 
 ## Troubleshooting
