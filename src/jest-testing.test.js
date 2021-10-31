@@ -1,4 +1,5 @@
-import { sum, compileMotherBoxCode, fetchData, fetchDataAsPromise, fetchErrorAsPromise } from './jest-testing';
+import { sum, compileMotherBoxCode, fetchData, fetchDataAsPromise, fetchErrorAsPromise, emitData, customForEach } from './jest-testing';
+import defaultExport, { foo, bar } from './partial';
 require("babel-core/register");
 require("babel-polyfill");
 
@@ -114,3 +115,105 @@ describe('async and setup / teardown', () => {
     })
 });
 // Testing Asynchronous Code & Setup and teardown - end
+
+// Mock functions - begin
+// use the `jest.fn` method to create a mock function
+const mockCallback = jest.fn(x => x + 42);
+
+test('the .mock property of the mock callback method', () => {
+    customForEach([1, 2, 3], mockCallback);
+
+    // the mock function should have been called 3 times exactly
+    expect(mockCallback.mock.calls.length).toBe(3);
+    // The first argument of the first call to the function was 1
+    expect(mockCallback.mock.calls[0][0]).toBe(1);
+    // The first argument of the second call to the function was 2
+    expect(mockCallback.mock.calls[1][0]).toBe(2);
+    // The return value of the first call to the function was 43
+    expect(mockCallback.mock.results[0].value).toBe(43);
+
+    // Now, using Custom Matchers
+    expect(mockCallback).toHaveBeenCalledTimes(3);
+    expect(mockCallback).toHaveBeenCalledWith(1);
+    expect(mockCallback).toHaveBeenCalledWith(2);
+    expect(mockCallback).toHaveNthReturnedWith(1, 43);
+});
+
+describe('Testing Mock Functions', () => {
+    let emptyMockFn = jest.fn();
+    beforeEach(() => {
+        emptyMockFn = jest.fn();
+    })
+
+    test('instantiation of the .mock property', () => {
+        new emptyMockFn();
+        new emptyMockFn();
+        console.log(emptyMockFn.mock.instances);
+        expect(emptyMockFn.mock.instances.length).toBe(2);
+    });
+
+    test('mock return values', () => {
+        // the following ways can be used to program mock functions to return specified values
+        emptyMockFn
+            .mockReturnValueOnce(10)
+            .mockReturnValueOnce('x')
+            .mockReturnValue(true)
+            .mockReturnValue(true);
+
+        const [first, second, third, fourth] = [emptyMockFn(), emptyMockFn(), emptyMockFn(), emptyMockFn()];
+        expect(first).toBe(10);
+        expect(second).toEqual('x');
+        expect(third).toBe(true);
+        expect(fourth).toBe(true);
+    });
+});
+
+describe('mock modules', () => {
+    jest.mock('./peanut-butter-promise');
+    const peanutButter = require('./peanut-butter-promise');
+    test('mocking modules', () => {
+        peanutButter.get.mockResolvedValue('Plot twise! This is not peanut butter. *Evil laughs*');
+        peanutButter.get().then(data => expect(data).toMatch('*Evil laughs*'));
+    });
+});
+
+jest.mock('./partial', () => {
+    const originalModule = jest.requireActual('./partial');
+
+    // Mocking the default export, and the named export 'bar'
+    return {
+        __esModule: true,
+        ...originalModule,
+        default: jest.fn(() => 'mocked baz'),
+        foo: 'mocked foo'
+    }
+});
+test('mocking partials', () => {
+    const defaultExportResult = defaultExport();
+    expect(defaultExportResult).toBe('mocked baz')
+    expect(defaultExport).toHaveBeenCalled();
+    expect(foo).toBe('mocked foo');
+    expect(bar()).toBe('bar');
+});
+
+describe('mock implementation', () => {
+    jest.mock('./peanut-butter-module');
+    const peanutButter = require('./peanut-butter-module');
+    peanutButter.mockImplementation(() => 'NOT peanut butter');
+
+    test('mocking implementation', () => {
+        expect(peanutButter()).toBe('NOT peanut butter');
+    });
+});
+
+// Skipping Mock Names, because I don't think I will be needing it anytime soon.
+// URL for reference: https://jestjs.io/docs/mock-functions#mock-names
+
+// Mock functions - end
+
+// extras - begin
+test('emitted data is peanut butter', async () => {
+    const data = await emitData();
+    expect(data).toBe('peanut butter');
+});
+// extras - end

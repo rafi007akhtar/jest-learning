@@ -11,7 +11,7 @@ function compileMotherBoxCode() {
  */
 function emitData() {
     const data = 'peanut butter';
-    setTimeout(() => {}, 3000);
+    setTimeout(() => {}, 100);
     return data;
 }
 
@@ -30,4 +30,15 @@ function fetchErrorAsPromise() {
     return Promise.reject('error');
 }
 
-module.exports = { sum, compileMotherBoxCode, fetchData, fetchDataAsPromise, fetchErrorAsPromise };
+/**
+ * A simple implementation of the `forEach` array method in JavaScript.
+ * @param {Array} array - the array on which the iterations need to be performed
+ * @param {Function} cb - the callback function which needs to be called with every element of the array
+ */
+function customForEach(array, cb) {
+    for (let i = 0; i < array.length; i++) {
+        cb(array[i]);
+    }
+}
+
+module.exports = { sum, compileMotherBoxCode, fetchData, fetchDataAsPromise, fetchErrorAsPromise, emitData, customForEach };
